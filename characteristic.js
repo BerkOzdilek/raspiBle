@@ -149,7 +149,7 @@ EchoCharacteristic.prototype.onUnsubscribe = function() {
 
      _updateValueCallback = null;
 
-    // process.exit(2);
+    process.exit(2);
 };
 
 module.exports = EchoCharacteristic;
