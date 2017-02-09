@@ -18,7 +18,7 @@ function hex2a(hexx) {
     return str;
 }
 
-var serialPort = new SerialPort("/dev/ttyAMA0", {
+var serialPort = new SerialPort("/dev/ttyS0", {
     baudrate: 9600
     // ,parser: parsers.byteLength(35)
     // ,parser: parsers.readline('\n')
