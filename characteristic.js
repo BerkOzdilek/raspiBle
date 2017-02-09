@@ -50,23 +50,15 @@ serialPort.on('data', function(data) {
         console.log('_updateValueCallback is null');
     });
 
-  // serialPort.on('data', function(data) {
-  //           console.log("data: "+  data);
-  //       });
-
-
 var EchoCharacteristic = function() {
     EchoCharacteristic.super_.call(this, {
         uuid: 'ec0e',
         properties: ['write', 'notify']
     });
-
- // this.updateValueCallback = null;
 };
+util.inherits(EchoCharacteristic, BlenoCharacteristic);
 
 var _updateValueCallback = null;
-
-util.inherits(EchoCharacteristic, BlenoCharacteristic);
 
 EchoCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResponse, callback) {
     console.log('EchoCharacteristic - onWriteRequest: value = ' + data);
@@ -89,53 +81,7 @@ EchoCharacteristic.prototype.onSubscribe = function(maxValueSize, updateValueCal
         } else {
             console.log('port cannot be opened');
         }
-    })
-
-    /** version 2 */
-    // serialPort.on('data', function(data) {
-    //     console.log('data received ('+ data.length +'): '+ data);
-    //     var hexString = ""
-    //     for (var i = 0; i < data.length; i++){
-    //         hexString += data[i].toString(16);
-    //     }
-    //     console.log('as hex: ' + hexString);
-    //     _updateValueCallback(new Buffer(hexString));
-    //     });
-
-    // serialPort.open(function (error) {
-    //     console.log('opened serial comm', error);
-
-    // serialPort.on('data', function(data) {
-    //     console.log('data received: '+ data);
-    //     _updateValueCallback(new Buffer(data));
-    //     });
-
-    // serialPort.on('error', function(error) {
-    //         console.log("serial port on error ", error);
-    //     });
-    // });
-
-// serialPort.open(function (error) {
-//     console.log('open', error);;
-    
-//     serialPort.on('data', function(data) {
-//       this.data = data.toString('hex');
-//       if (this.data.charAt(0) == '2' && this.data.charAt(1) == '3') {
-//         updateValueCallback(data);
-//         console.log("Incoming DATA: ", this.data);
-//       }
-
-//       else{
-//         console.log("ERROR");
-//         process.exit(1);
-//       }
-
-//     });
-
-//     serialPort.on('error', function(error) {
-//       console.log(" error ", error)//, "heey", provider.data);
-//     });
-//   });
+    });
 };
 
 EchoCharacteristic.prototype.onUnsubscribe = function() {
@@ -144,7 +90,7 @@ EchoCharacteristic.prototype.onUnsubscribe = function() {
      if (serialPort.isOpen()){
         serialPort.close(function(error) {
             console.log('serial port closed, '+error);
-        })
+        });
      }
 
      _updateValueCallback = null;
