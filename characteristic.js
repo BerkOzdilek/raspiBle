@@ -62,9 +62,13 @@ var _updateValueCallback = null;
 
 EchoCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResponse, callback) {
     console.log('EchoCharacteristic - onWriteRequest: value = ' + data);
-    if (serialPort.isOpen()){
-        // serialPort.write(new Buffer(data.toString('utf-8'), 'hex'));
-        console.log('port is open');
+    if (serialPort.isOpen()) {
+        serialPort.write(new Buffer(data.toString('utf-8'), 'hex'), function (error) {
+            if (!error)
+                console.log('data written to serial port');
+            else
+                console.log('data cant written to serial port: '+ error);
+        });
     } else
         console.log('port is not open');
 
