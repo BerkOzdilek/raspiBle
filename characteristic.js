@@ -22,7 +22,7 @@ var serialPort = new SerialPort("/dev/ttyAMA0", {
     baudrate: 9600
     // ,parser: parsers.byteLength(35)
     // ,parser: parsers.readline('\n')
-    // ,autoOpen: false
+    ,autoOpen: false
     ,parser: parsers.byteDelimiter([255, 253, 187])
 });
 
@@ -31,8 +31,24 @@ serialPort.on('error', function(error) {
 });
 
 serialPort.on('open', function(error) {
-    console.log("serial port opened "+ error);
+    if (!error)
+        console.log("serial port opened successfuly");
+    else
+        console.log("serial can't open: "+ error);
 });
+
+serialPort.on('data', function(data) {
+    console.log('data received ('+ data.length +'): '+ data);
+    var hexString = ""
+    for (var i = 0; i < data.length; i++){
+        hexString += data[i].toString(16);
+    }
+    console.log('as hex: ' + hexString);
+    if (_updateValueCallback)
+        _updateValueCallback(new Buffer(hexString));
+    else
+        console.log('_updateValueCallback is null');
+    });
 
   // serialPort.on('data', function(data) {
   //           console.log("data: "+  data);
@@ -45,7 +61,7 @@ var EchoCharacteristic = function() {
         properties: ['write', 'notify']
     });
 
- this.updateValueCallback = null;
+ // this.updateValueCallback = null;
 };
 
 var _updateValueCallback = null;
@@ -57,8 +73,8 @@ EchoCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResp
     if (serialPort.isOpen()){
         // serialPort.write(new Buffer(data.toString('utf-8'), 'hex'));
         console.log('port is open');
-
-    }
+    } else
+        console.log('port is not open');
 
     callback(this.RESULT_SUCCESS);
 };
@@ -66,18 +82,25 @@ EchoCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResp
 EchoCharacteristic.prototype.onSubscribe = function(maxValueSize, updateValueCallback) {
     console.log('EchoCharacteristic - onSubscribe ');
 
-    _updateValueCallback = updateValueCallback;
-
-    serialPort.on('data', function(data) {
-        console.log('data received ('+ data.length +'): '+ data);
-        var hexString = ""
-        for (var i = 0; i < data.length; i++){
-            hexString += data[i].toString(16);
+    serialPort.open(function (err) {
+        if (!err) {
+            _updateValueCallback = updateValueCallback;
+            console.log('callback set');
+        } else {
+            console.log('port cannot be opened');
         }
-        console.log('as hex: ' + hexString);
-        _updateValueCallback(new Buffer(hexString));
-        });
-    console.log('callback set');
+    })
+
+    /** version 2 */
+    // serialPort.on('data', function(data) {
+    //     console.log('data received ('+ data.length +'): '+ data);
+    //     var hexString = ""
+    //     for (var i = 0; i < data.length; i++){
+    //         hexString += data[i].toString(16);
+    //     }
+    //     console.log('as hex: ' + hexString);
+    //     _updateValueCallback(new Buffer(hexString));
+    //     });
 
     // serialPort.open(function (error) {
     //     console.log('opened serial comm', error);
@@ -119,11 +142,14 @@ EchoCharacteristic.prototype.onUnsubscribe = function() {
     console.log('EchoCharacteristic - onUnsubscribe');
 
      if (serialPort.isOpen()){
-        serialPort.close(function(error){
-            console.log('closed, '+error);
+        serialPort.close(function(error) {
+            console.log('serial port closed, '+error);
         })
      }
-    process.exit(2);
+
+     _updateValueCallback = null;
+
+    // process.exit(2);
 };
 
 module.exports = EchoCharacteristic;
