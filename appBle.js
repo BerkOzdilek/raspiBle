@@ -48,5 +48,6 @@ bleno.on('advertisingStop', function(error) {
 
 bleno.on('disconnect', function(clientAddress) {
   console.log("client disconnected -> " + clientAddress);
+  currentEchoCharacteristic.closeSerial();
 
 });

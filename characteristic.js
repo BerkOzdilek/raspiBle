@@ -94,4 +94,18 @@ EchoCharacteristic.prototype.onUnsubscribe = function() {
     process.exit(2);
 };
 
+EchoCharacteristic.prototype.closeSerial = function() {
+    console.log('EchoCharacteristic - closeSerial');
+
+     if (serialPort.isOpen()) {
+        serialPort.close(function(error) {
+            console.log('serial port closed, '+error);
+        });
+     }
+
+     _updateValueCallback = null;
+
+    // process.exit(2);
+};
+
 module.exports = EchoCharacteristic;
