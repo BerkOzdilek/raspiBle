@@ -16,7 +16,7 @@ var serialPort = new SerialPort("/dev/ttyS0", {
     // ,parser: parsers.readline('\n')
     ,autoOpen: false
     // ,parser: parsers.byteDelimiter([255, 253, 187])
-    ,parser: com.parsers.byteLength(71)
+    ,parser: parsers.byteLength(71)
 });
 
 serialPort.on('error', function(error) {
