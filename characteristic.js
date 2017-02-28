@@ -12,8 +12,6 @@ var BlenoCharacteristic = bleno.Characteristic;
 
 var serialPort = new SerialPort("/dev/ttyS0", {
     baudrate: 9600
-    // ,parser: parsers.byteLength(35)
-    // ,parser: parsers.readline('\n')
     ,autoOpen: false
     // ,parser: parsers.byteDelimiter([255, 253, 187])
     ,parser: parsers.byteLength(71)

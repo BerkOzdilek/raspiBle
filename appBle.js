@@ -8,7 +8,7 @@ var BlenoPrimaryService = bleno.PrimaryService;
 
 var currentEchoCharacteristic;
 
-console.log('bleno - echo');
+console.log('vestel - puzzle');
 
 bleno.on('stateChange', function(state) {
     console.log('on -> stateChange: ' + state);
@@ -25,10 +25,9 @@ bleno.on('advertisingStart', function(error) {
     console.log('on -> advertisingStart: ' + (error ? 'error ' + error : 'success'));
 
     if (!error) {
-        if(currentEchoCharacteristic) {
-            currentEchoCharacteristic.reset();
-        }
-        currentEchoCharacteristic = new EchoCharacteristic();
+        if(!currentEchoCharacteristic) 
+            currentEchoCharacteristic = new EchoCharacteristic();
+        
         bleno.setServices([
             new BlenoPrimaryService({
                 uuid: 'ec00',
@@ -37,14 +36,17 @@ bleno.on('advertisingStart', function(error) {
                 ]
             })
         ]);
-    }else{
-        console.log("error");
+    }
+    else {
+        console.log('[ERROR]advertisingStart: '+ error);
     }
 });
 
 bleno.on('advertisingStop', function(error) {
     console.log('on -> advertisingStop: ' + (error ? 'error ' + error : 'success'));
-    if(currentEchoCharacteristic) {
-        currentEchoCharacteristic.reset();
-    }
+});
+
+bleno.on('disconnect', function(clientAddress) {
+  console.log("client disconnected -> " + clientAddress);
+
 });
