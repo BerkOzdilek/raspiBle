@@ -24,8 +24,10 @@ serialPort.on('error', function(error) {
 serialPort.on('open', function(error) {
     if (!error)
         console.log("serial port opened successfuly");
-    else
+    else {
         console.log("serial can't open: "+ error);
+        _updateValueCallback = null;
+    }
 });
 
 serialPort.on('data', function(data) {

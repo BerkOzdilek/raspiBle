@@ -8,7 +8,7 @@ var BlenoPrimaryService = bleno.PrimaryService;
 
 var currentEchoCharacteristic;
 
-console.log('vestel - puzzle');
+console.log('vestel - puzzle v2');
 
 bleno.on('stateChange', function(state) {
     console.log('on -> stateChange: ' + state);
