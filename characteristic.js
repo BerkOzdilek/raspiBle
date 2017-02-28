@@ -32,7 +32,7 @@ serialPort.on('open', function(error) {
 
 serialPort.on('data', function(data) {
 
-    console.log('data received ('+ data.length +'): '+ data);
+    console.log('data received ('+ data.length +')');
     var hexString = data.toString('hex');
     var headerIndex = hexString.indexOf("23fffdbb");
     var dataBody = hexString.substr(headerIndex, 70);
