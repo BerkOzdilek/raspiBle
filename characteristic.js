@@ -10,20 +10,13 @@ var parsers = serialport.parsers;
 var BlenoCharacteristic = bleno.Characteristic;
 
 
-function hex2a(hexx) {
-    var hex = hexx.toString();//force conversion
-    var str = '';
-    for (var i = 0; i < hex.length; i += 2)
-        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    return str;
-}
-
 var serialPort = new SerialPort("/dev/ttyS0", {
     baudrate: 9600
     // ,parser: parsers.byteLength(35)
     // ,parser: parsers.readline('\n')
     ,autoOpen: false
-    ,parser: parsers.byteDelimiter([255, 253, 187])
+    // ,parser: parsers.byteDelimiter([255, 253, 187])
+    ,parser: com.parsers.byteLength(71)
 });
 
 serialPort.on('error', function(error) {
@@ -38,14 +31,15 @@ serialPort.on('open', function(error) {
 });
 
 serialPort.on('data', function(data) {
+
     console.log('data received ('+ data.length +'): '+ data);
-    var hexString = ""
-    for (var i = 0; i < data.length; i++){
-        hexString += data[i].toString(16);
-    }
-    console.log('as hex: ' + hexString);
+    var hexString = data.toString('hex');
+    var headerIndex = hexString.indexOf("23fffdbb");
+    var dataBody = hexString.substr(headerIndex, 70);
+    console.log('data to write: '+ dataBody);
+
     if (_updateValueCallback)
-        _updateValueCallback(new Buffer(hexString));
+        _updateValueCallback(new Buffer(dataBody, 'hex'));
     else
         console.log('_updateValueCallback is null');
     });
