@@ -1,0 +1,6 @@
+bleno - echo
+on -> stateChange: poweredOn
+on
+on -> advertisingStart: success
+EchoCharacteristic - onSubscribe  function () { [native code] }
+open undefined
